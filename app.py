@@ -693,6 +693,9 @@ def landing():
         session.modified = True
 
     if "consent" not in session:
+        # Show homepage when no query params and no pending session data
+        if not any(stored.values()) and not request.args:
+            return render_template("home.html")
         app.logger.info("[landing] redirecting to consent (pending pid=%s)", stored.get("pending_pid"))
         return redirect(url_for("consent"))
 
