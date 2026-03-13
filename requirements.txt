@@ -3,4 +3,4 @@ python-dotenv==1.0.0
 cryptography
 pandas
 openpyxl==3.1.2
-scipy
+gunicorn
