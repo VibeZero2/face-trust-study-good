@@ -422,6 +422,9 @@ class DataCleaner:
                 df[col] = None
 
         if 'question' in df.columns and 'response' in df.columns:
+            # Convert response to object dtype first — newer pandas/Python 3.13 infers
+            # StringDtype which rejects numeric assignment
+            df['response'] = df['response'].astype(object)
             numeric_questions = {'trust_rating', 'emotion_rating', 'masculinity_full', 'femininity_full'}
             mask = df['question'].isin(numeric_questions)
             df.loc[mask, 'response'] = pd.to_numeric(df.loc[mask, 'response'], errors='coerce')
