@@ -3,4 +3,4 @@ data/responses/participant_*
 data/responses/200*
 data/sessions/
 __pycache__/
-data/responses/*.csv
+# data/responses/*.csv
