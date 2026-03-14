@@ -154,22 +154,33 @@ def initialize_data():
         if not csv_files:
             raise FileNotFoundError(f"No CSV files found in {data_dir}")
 
-        print(f"Found {len(csv_files)} CSV files. Current mode: {dashboard_mode}")
+        print(f"[init] Found {len(csv_files)} CSV files in {data_dir}. Mode: {dashboard_mode}")
+        print(f"[init] Files: {[f.name for f in csv_files[:5]]}{'...' if len(csv_files) > 5 else ''}")
 
+        print("[init] Step 1: Creating DataCleaner...")
         data_cleaner = DataCleaner(str(data_dir), mode=dashboard_mode)
+        print("[init] Step 2: Loading data...")
         data_cleaner.load_data()
+        print(f"[init] Step 2 done: raw_data shape = {data_cleaner.raw_data.shape if data_cleaner.raw_data is not None else 'None'}")
+        print("[init] Step 3: Standardizing data...")
         data_cleaner.standardize_data()
+        print(f"[init] Step 3 done: raw_data shape = {data_cleaner.raw_data.shape if data_cleaner.raw_data is not None else 'None'}")
+        print("[init] Step 4: Applying exclusion rules...")
         data_cleaner.apply_exclusion_rules()
+        print(f"[init] Step 4 done: cleaned_data shape = {data_cleaner.cleaned_data.shape if data_cleaner.cleaned_data is not None else 'None'}")
 
         if len(data_cleaner.raw_data) > 0:
+            print("[init] Step 5: Creating StatisticalAnalyzer + DataFilter...")
             statistical_analyzer = StatisticalAnalyzer(data_cleaner)
             data_filter = DataFilter(data_cleaner)
+            print("[init] Step 5 done")
         else:
+            print("[init] No data rows — skipping analyzer/filter")
             statistical_analyzer = None
             data_filter = None
 
         last_data_refresh = datetime.now()
-        print(f"Data initialized successfully in {dashboard_mode} mode")
+        print(f"[init] SUCCESS — data initialized in {dashboard_mode} mode")
         return True
     except FileNotFoundError as e:
         print(f"No data files found: {e}")
