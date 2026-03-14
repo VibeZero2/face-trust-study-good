@@ -181,7 +181,14 @@ def initialize_data():
         return True
     except Exception as e:
         print(f"Error initializing data: {e}")
-        return False
+        import traceback
+        traceback.print_exc()
+        # Start in empty state so dashboard + upload still work
+        data_cleaner = None
+        statistical_analyzer = None
+        data_filter = None
+        last_data_refresh = datetime.now()
+        return True
 
 
 
@@ -391,9 +398,7 @@ def dashboard():
     global data_cleaner, statistical_analyzer, data_filter
     
     if not is_data_available():
-        if not initialize_data():
-            flash('Error loading data. Please check the data directory.', 'error')
-            return render_template('error.html', message="Data initialization failed")
+        initialize_data()
     
     try:
         # Starting dashboard function
